@@ -1,6 +1,9 @@
 import Head from 'next/head'
+import { useForm } from "react-hook-form";
 
 export default function Home() {
+  const { register, handleSubmit,formState: { errors } } = useForm();
+  const onSubmit = data => console.log(data);
   return (
     <div className="flex h-screen">
       <Head>
@@ -10,15 +13,18 @@ export default function Home() {
       </Head>
       <div className="flex flex-col m-auto border border-blue-500 py-5 px-7 shadow-md">
         <span className="text-center pb-3 text-xl">React Hook Form</span>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
             <div className="flex flex-col space-y-1">
               <label className="text-sm">Username</label>
-              <input className="border border-gray-500 text-xs py-1 px-2" type="text" name="username" />
+              <input className="border border-gray-500 text-xs py-1 px-2" type="text" name="username" {...register("username", {required:true, maxLength:5})}  />
+              <span className="text-red-500 text-xs">{errors.username?.type === 'required' && "Username harus diisi"}</span>
+              <span className="text-red-500 text-xs">{errors.username?.type === 'maxLength' && "Max 5 karakter"}</span>
             </div>
             <div className="flex flex-col space-y-1">
               <lable className="text-sm">Password</lable>
-              <input className="border border-gray-500 text-xs py-1 px-2" type="password" name="password" />
+              <input className="border border-gray-500 text-xs py-1 px-2" type="password" name="password" {...register("password",{required:true})} />
+              <span className="text-red-500 text-xs">{errors.password?.type === 'required' && "Password harus diisi"}</span>
             </div>
           </div>
           <button className="bg-blue-500 mt-5 border w-full">Login</button>
